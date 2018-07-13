@@ -1,0 +1,64 @@
+!!! 5
+%html
+  %head
+    %title SimpleChat
+    %meta{"http-equiv"=>"Content-Type", :content=>"text/html", :charset=>"utf-8"}
+    %meta{:name=>"viewport", :content=>"width=device-width, user-scalable=0;"}
+    %script{:type=>"text/javascript",:src=>"jquery-2.0.3.min.js"}
+    %script{:type=>"text/javascript",:src=>"bootstrap/js/bootstrap.js"}
+    -# %script{:type=>"text/javascript",:src=>"angular.min.js"}
+    %script{:type=>"text/javascript",:src=>"vue.min.js"}
+    %link{:rel=>"stylesheet", :href=>"bootstrap/css/bootstrap.min.css"}
+    %link{:rel=>"stylesheet", :href=>"bootstrap/css/bootstrap-responsive.css"}
+    %link{:rel=>"shortcut icon", :type => "vnd.microsoft.icon", :href => "favicon.ico"}
+  %body
+    .container-flued
+      %div{:style=>"width:240;"}
+        %span{:style=>"text-align:center;font-size:92%;"}
+          -#%a{:href=>"http://chat.reponlabo.info/chat.html",:target=>"_blank"}
+          %a{:href=>"http://reponlabo.info/chat/chat_vue.html",:target=>"_blank"}
+            %button.btn-mini
+              %i{:class=>"icon-circle-arrow-right"}
+              スマートフォン、PC用はこちら
+      %h1 SimpleChat
+      #app{class:"span3"}
+        .span3{:style=>"width:240;height:auto;"}
+          /発言
+          %div
+            %input{:type=>"text","v-model"=>"name",:size=>"10",:placeholder=>"名前"}
+          %div
+            %textarea{"v-model"=>"comment",:rows=>"3",:placeholder=>"書き込む……",value:""}
+          %div
+            {{140-comment.length}}
+            %span{:class=>"pull-right"}
+              %button{class:"button btn","v-on":"click:sendComment(this)"}
+                %i{:class=>"icon-pencil"}
+                書き込む
+
+          %div
+            %button.btn-mini{"v-on":"click:flags.trash=!flags.trash"}
+              %i{:class=>"icon-trash"}
+              表示/非表示
+        .span3
+          %div
+            /新規データが読み込まれたら、未読数を表示する
+            %div{"v-show"=>"unreadlogsize>0",:style=>"text-align: center;color:blue;","v-on":"click:showunread()"}
+              {{unreadlogsize}} 件の未読
+            %div{"v-repeat"=>"comments"}
+              %div{"v-show"=>"flags.trash",:class=>"pull-right"}
+                %button.btn-mini{"v-on":"click:adddelflag(this)"}
+                  .i{:class=>"icon-trash"}
+              %div
+                %span{:class=>"name",:style=>"font-size:95%;",:class=>"text-info"}  {{member}}
+                %span{:style=>"font-size:75%;",:class=>"text-success pull-right"}  {{create_at}}
+              %div{:class=>"arrow_question",:style=>"margin:5px 10px 20px 10px"}
+                %span{"v-html":"data | to_url"}
+            %div{:class=>"text-success"}
+              {{end}}
+              -# todo: 「これ以上はありません」
+            %div
+              -# %a{:href=>"","ng-click"=>"readmore()"}
+              %button.btn{"v-on":"click:readmore()"}
+                %i{:class=>"icon-chevron-right"}
+                もっと読む
+    %script{:type=>"text/javascript",:src=>"chat_vue.js"}

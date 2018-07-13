@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h1 id="チャットサーバチャットソフト">チャットサーバ＆チャットソフト</h1>
+<p>2013.6.28 repon</p>
+<p>Sinatraで、データをjsonpでやり取りするチャットサーバを作り、クライアントをAngularJSで作りました。 習作ですが、使えれば使って行きたいです。</p>
+<h2 id="作成の動機">作成の動機</h2>
+<p>サバイブで動いているのが現在チャットルームのみで、それならログをさかのぼれるチャットルームを作ったほうがいいだろうと思っていたので。 マルチデバイス対応にしたかった。というか、待ち合わせとかでは、チャットをスマートフォンで読み書きできないと結構ストレスなので。</p>
+<h2 id="動作">動作</h2>
+<p>クライアントは一応、PCブラウザでもスマートフォンのブラウザでも動きます。</p>
+<h2 id="なぜsinatraとangularjsなのか">なぜSinatraとAngularJSなのか</h2>
+<ul>
+<li><p>データをjson形式でやり取りすれば、サーバでもクライアントでも、好きなように作れると思い、まずjsonでデータをやり取りしたい、と思いました。</p></li>
+<li>サーバ側はSinatraで行くことにしました。自分の必要な作業でURLルーティングが必要となり、一番とっつきやすそうなものがSinatraで、ある程度触ったので。Railsなどは触れてないです。</li>
+<li><p>サーバはSinatra+Sequel+Passengerです。</p></li>
+<li>クライアント側は、jsonデータをjQueryでDOMを組んでいくことに大きく負担を感じ、フレームワークを探してみたところ、AngularJSが使いやすそうだったので、作ってみました。実際使いやすかったです。</li>
+<li><p>クライアントはhaml+jQuery+AngularJS+TwitterBootstrapです。Bootstrapでリキッドデザインだぜイェーと思って作ったのですが、崩れる崩れる……</p></li>
+</ul>
+<h2 id="説明">説明</h2>
+<p>ここで本来「仕様」を書くのでしょうが、書き方がわからないため、メモになります。すみません。</p>
+<h4 id="サーバについて">サーバについて</h4>
+<ol style="list-style-type: decimal">
+<li>サーバは、URLに接続するとjsonp形式のデータを返します。</li>
+<li><code>baseurl/count?callback=callback</code>で、チャットの発言数を<code>callback({&quot;cnt&quot;:18})</code>といった形式で返します。</li>
+<li>baseurl/getで、チャットの発言を取得出来ます。発言は新しい順に並べられています。パラメータ<code>size</code>で取得したい発言数を、パラメータ<code>offset</code>で最初からoffset番目以降のデータを取り出します。リクエスト形式は<code>baseurl/get?callback=callback&amp;size=5&amp;offset=5</code>といった形式になり、<code>callback([{&quot;id&quot;:1,&quot;member&quot;:&quot;repon&quot;,&quot;data&quot;:&quot;ohayo&quot;,&quot;create_at&quot;:&quot;2013-06-29 11:23:09&quot;}])</code>といったデータを返します。</li>
+<li>baseurl/postで、チャットに発言できます。メソッドは<code>get</code>です（<code>post</code>ではありません……jsonpでpostをやる方法が、jQueryなどでもわからず、失敗ばかりだったので<code>get</code>に日和りました）。パラメータ<code>member</code>で名前を、パラメータ<code>data</code>で発言を送信出来ます。コールバックとして、発言のidが返ってきます。</li>
+</ol>
+<h4 id="クライアントについて">クライアントについて</h4>
+<ol style="list-style-type: decimal">
+<li>iPhoneで見やすいものをと作ったのですが、名前と時間が並ばず、上下になってしまっていますね……</li>
+<li>発言はすぐ反映します。</li>
+<li>認証は付けていません。名前も自分で書きます。</li>
+</ol>
+<h2 id="ソースの公開について">ソースの公開について</h2>
+<p>ソースは知人やサバイブで限定公開します。 http://chat.reponlabo.info/chatapp.zip です。 知人やサバイブでソースを見てもらって、使えそうなら道具として使えればと思います。 それと、SinatraとSequelとAngularJSとhamlの、わずかながらの実践となっているので、見ていただければ。 hamlはrubyが必要ですが、コード量が少なくて済むので重宝しています。 javascriptのフレームワークはDomを極力触らないで済むので、ミスも少なくなると思います。AngularJSのページは英語ですが、ドットインストールでチュートリアルやって、本家サイトに行くと例が豊富なので、だいたいやりたいことが書いてありました。 XSS対策とか、ほとんど調べていないので、多分ヤバイのではないかという気はします。 リファクタリングしないと、中味がよくわからないかも。でも動く。</p>
+<h2 id="今後">今後</h2>
+<ul>
+<li>CRUDのupdateとdeleteも付いてないですし、そのためには認証も必要ですがまだ調べられていません（サーバとクライアントの認証、サーバとクライアントのセッション、それぞれ）。</li>
+<li>iPhoneで見られるもの、と思ったのに、崩れています。どうしたものか。</li>
+<li>使うとしたら、どこにクライアントを公開しましょうか。現在は <code>http://chat.reponlabo.info/chat.html</code> にあります。</li>
+<li>サーバの機能拡張なども、Sinatraは簡単にできるので（自由すぎてむしろ混乱が起きやすい）、随時追加していけば使えるものになるかもしれないです。</li>
+</ul>
+<p>以上。</p>
+</body>
+</html>

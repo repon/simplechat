@@ -1,0 +1,11 @@
+*.DS_Store*
+Gemfile.lock
+main.db
+vendor/bundle
+.bundle
+Passenger.*
+log/
+tmp/pids/
+public/chatapp.zip
+public/counter/
+tmp/counter/

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SimpleChat</title>
+    <meta charset='utf-8' content='text/html' http-equiv='Content-Type'>
+    <meta content='width=device-width, user-scalable=0;' name='viewport'>
+    <script src='jquery-2.0.3.min.js' type='text/javascript'></script>
+    <script src='bootstrap/js/bootstrap.js' type='text/javascript'></script>
+    <script src='vue.min.js' type='text/javascript'></script>
+    <link href='bootstrap/css/bootstrap.min.css' rel='stylesheet'>
+    <link href='bootstrap/css/bootstrap-responsive.css' rel='stylesheet'>
+    <link href='favicon.ico' rel='shortcut icon' type='vnd.microsoft.icon'>
+  </head>
+  <body>
+    <div class='container-flued'>
+      <div style='width:240;'>
+        <span style='text-align:center;font-size:92%;'>
+          <a href='http://reponlabo.info/chat/chat_vue.html' target='_blank'>
+            <button class='btn-mini'>
+              <i class='icon-circle-arrow-right'></i>
+              スマートフォン、PC用はこちら
+            </button>
+          </a>
+        </span>
+      </div>
+      <h1>SimpleChat</h1>
+      <div class='span3' id='app'>
+        <div class='span3' style='width:240;height:auto;'>
+          <!-- 発言 -->
+          <div>
+            <input placeholder='名前' size='10' type='text' v-model='name'>
+          </div>
+          <div>
+            <textarea placeholder='書き込む……' rows='3' v-model='comment' value=''></textarea>
+          </div>
+          <div>
+            {{140-comment.length}}
+            <span class='pull-right'>
+              <button class='button btn' v-on='click:sendComment(this)'>
+                <i class='icon-pencil'></i>
+                書き込む
+              </button>
+            </span>
+          </div>
+          <div>
+            <button class='btn-mini' v-on='click:flags.trash=!flags.trash'>
+              <i class='icon-trash'></i>
+              表示/非表示
+            </button>
+          </div>
+        </div>
+        <div class='span3'>
+          <div>
+            <!-- 新規データが読み込まれたら、未読数を表示する -->
+            <div style='text-align: center;color:blue;' v-on='click:showunread()' v-show='unreadlogsize&gt;0'>
+              {{unreadlogsize}} 件の未読
+            </div>
+            <div v-repeat='comments'>
+              <div class='pull-right' v-show='flags.trash'>
+                <button class='btn-mini' v-on='click:adddelflag(this)'>
+                  <div class='i icon-trash'></div>
+                </button>
+              </div>
+              <div>
+                <span class='text-info' style='font-size:95%;'>{{member}}</span>
+                <span class='text-success pull-right' style='font-size:75%;'>{{create_at}}</span>
+              </div>
+              <div class='arrow_question' style='margin:5px 10px 20px 10px'>
+                <span v-html='data | to_url'></span>
+              </div>
+            </div>
+            <div class='text-success'>
+              {{end}}
+            </div>
+            <div>
+              <button class='btn' v-on='click:readmore()'>
+                <i class='icon-chevron-right'></i>
+                もっと読む
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src='chat_vue.js' type='text/javascript'></script>
+  </body>
+</html>

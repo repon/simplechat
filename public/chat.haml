@@ -1,0 +1,79 @@
+!!! 5
+%html
+  %head
+    %title SimpleChat
+    %meta{"http-equiv"=>"Content-Type", :content=>"text/html", :charset=>"utf-8"}
+    %meta{:name=>"viewport", :content=>"width=device-width, user-scalable=0;"}
+    %script{:type=>"text/javascript",:src=>"jquery-2.0.3.min.js"}
+    %script{:type=>"text/javascript",:src=>"bootstrap/js/bootstrap.js"}
+    -#%script{:type=>"text/javascript",:src=>"angular.min.js"}
+    %script{:type=>"text/javascript",:src=>"http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"}
+    %link{:rel=>"stylesheet", :href=>"bootstrap/css/bootstrap.min.css"}
+    %link{:rel=>"stylesheet", :href=>"bootstrap/css/bootstrap-responsive.css"}
+    %link{:rel=>"shortcut icon", :type => "vnd.microsoft.icon", :href => "favicon.ico"}
+    %link{:rel=>"stylesheet", :href=>"chat.css"}
+  %body{"ng-app"=>"",:style=>"font-size:100%;"}
+    .container-flued{"ng-controller"=>"chatCtrl"}
+      /上に戻るボタン
+      %p{:id=>"back-top",:style=>"position: fixed; bottom: 20px; right:20px;"}
+        %button.btn
+          %a{:href=>"#top"}
+            %i{:class=>"icon-arrow-up"}
+            上へ
+      %h1 SimpleChat
+      .span4{"ng-init"=>"init()"}
+        %div
+          /発言
+          %div
+            %input{:type=>"text","ng-model"=>"name",:size=>"10",:placeholder=>"名前"}
+          %div
+            %textarea{"ng-model"=>"comment",:rows=>"3",:placeholder=>"書き込む……"}
+          %div
+            {{140-comment.length}}
+            %span{:class=>"pull-right"}
+              %a{:href=>"","ng-click"=>"postComment()"}
+                %button.btn
+                  %i{:class=>"icon-pencil"}
+                  書き込む
+          %div
+            %button.btn-mini
+              %a{:href=>"","ng-click"=>"trash=!trash"}
+                %i{:class=>"icon-trash"}
+                表示/非表示
+  
+          %div
+            /新規データが読み込まれたら、未読数を表示する
+            /自分が書き込んだ場合にはどうするか？
+            %div{"ng-show"=>"unreadlogsize>0",:style=>"text-align: center;"}
+              %a{:href=>"","ng-click"=>"showunread()"}
+                {{unreadlogsize}} 件の未読
+            %div{"ng-repeat"=>"user in users","ng-controller"=>"updelPost"}
+              %div{"ng-show"=>"trash",:class=>"pull-right"}
+                %a{:href=>"","ng-click"=>"adddelflag()"}
+                  .button.btn-mini
+                    .i{:class=>"icon-trash"}
+              %div
+                %span{:class=>"name",:style=>"font-size:95%;",:class=>"text-info"}  {{user.member}}
+                %span{:style=>"font-size:75%;",:class=>"text-success pull-right"}  {{user.create_at}}
+              %div{:class=>"arrow_question",:style=>"margin:5px 30px 20px 30px"}
+                {{user.data}}
+            %div{:class=>"text-success"}
+              {{end}}
+            %div
+              %a{:href=>"","ng-click"=>"readmore()"}
+                %button.btn
+                  %i{:class=>"icon-chevron-right"}
+                  もっと読む
+
+    %script{:type=>"text/javascript",:src=>"chat.js"}
+    :javascript
+      //上に戻るボタン。ここだけjQueryを使っている。$(function(){})でonloadを行おうとすると「$はありません」と怒られる。なぜ？
+      $(function(){
+        $('#back-top a').click(function () {
+          //スムーズに上に戻る
+          $('body,html').animate({
+            scrollTop: 0
+          }, 800);
+          return false;
+        });
+      });
